@@ -38,6 +38,8 @@
   .recibo .monto { font-family: var(--display); font-size: clamp(36px, 6vw, 64px); font-weight: 700; line-height: 1; color: var(--tinta); }
   .recibo .quien { color: var(--gris); margin-top: 8px; }
   .recibo .flecha { font-size: 28px; color: var(--verde); }
+  .ciclo { grid-template-columns: 1fr auto 1fr auto 1fr; }
+  .ciclo .monto { font-size: clamp(32px, 4.4vw, 46px); }
   .recibo .pie { grid-column: 1 / -1; border-top: 1px dashed var(--linea); padding-top: 16px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; color: var(--gris); }
 
   table { width: 100%; border-collapse: collapse; margin-top: 40px; font-size: 20px; }
@@ -63,7 +65,7 @@
   footer { padding: 40px 0 56px; font-size: 14px; color: var(--gris); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 
   @media (max-width: 720px) {
-    .recibo { grid-template-columns: 1fr; } .recibo .flecha { transform: rotate(90deg); justify-self: start; }
+    .recibo, .ciclo { grid-template-columns: 1fr; } .recibo .flecha { transform: rotate(90deg); justify-self: start; }
     .lineas div { grid-template-columns: 1fr; gap: 4px; }
     .numeros { grid-template-columns: 1fr; }
     .movs div { grid-template-columns: 1fr 1fr; }
@@ -83,6 +85,21 @@
     <p>El boliviano, en la red de Stellar. Se compra con un QR, se cambia por dólares digitales en segundos y se canjea en tu banco cuando quieras.</p>
     <a class="ver" id="ver-activo" target="_blank" rel="noopener">Ver el activo en la red →</a>
   </header>
+
+  <section>
+    <h2>Así de simple.</h2>
+    <div class="recibo ciclo">
+      <div><div class="monto">1.000 Bs</div><div class="quien">pagas un QR</div></div>
+      <div class="flecha">→</div>
+      <div><div class="monto">1.000 BOBT</div><div class="quien">en la red de Stellar</div></div>
+      <div class="flecha">→</div>
+      <div><div class="monto">1.000 Bs</div><div class="quien">de vuelta en tu banco</div></div>
+      <div class="pie">
+        <span>Siempre 1:1 · sin comisión · cuando quieras</span>
+        <span>En el medio, BOBT se cambia por USDC o se manda a cualquier país</span>
+      </div>
+    </div>
+  </section>
 
   <section>
     <h2>Una remesa, de verdad.</h2>
@@ -106,6 +123,11 @@
       <tr class="falta"><td>Bolivia</td><td>BOBT</td></tr>
     </table>
     <p class="lead">Sin un boliviano en la red, ninguna wallet, remesadora o empresa de afuera puede pagar en bolivianos con estándares abiertos.</p>
+  </section>
+
+  <section>
+    <h2>No es otra app. Es la pieza que falta.</h2>
+    <p class="lead">Para conectar a Bolivia, la red no necesita que la gente adopte una plataforma más: necesita que el boliviano exista en ella. BOBT no compite con bancos, wallets ni remesadoras: es la moneda que todos pueden usar, con un estándar abierto. Cada app que lo integra suma a las demás.</p>
   </section>
 
   <section>
