@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BOBT · Demo en testnet</title>
+<link rel="icon" href="/marca/bobt-moneda-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,600;6..12,800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --verde: #00573F; --verde-oscuro: #003D2C; --verde-claro: #E4F0EA; --fondo: #F6F8F5;
+    --tinta: #14211C; --gris: #4A5A53; --linea: #DCE5DF;
+    --rojo: #D9645A; --amarillo: #F2C94C; --verde-suave: #4FA36B;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: 'Nunito Sans', 'Avenir Next', system-ui, sans-serif; background: var(--fondo); color: var(--tinta); }
+  .franja { height: 4px; background: linear-gradient(90deg, var(--rojo) 0 33.3%, var(--amarillo) 33.3% 66.6%, var(--verde-suave) 66.6%); }
+  header { max-width: 1120px; margin: 0 auto; padding: 28px 24px 8px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  header img { height: 40px; }
+  .chip { font-size: 13px; font-weight: 600; color: var(--verde); background: var(--verde-claro); padding: 6px 12px; border-radius: 999px; }
+  main { max-width: 1120px; margin: 0 auto; padding: 16px 24px 48px; display: grid; gap: 20px; }
+  .cuentas { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .cuenta, .paso, .reservas { background: #FCFDFB; border: 1px solid var(--linea); border-radius: 16px; padding: 22px 24px; }
+  .cuenta small, .paso small, .reservas small { display: block; color: var(--gris); font-size: 14px; }
+  .cuenta strong { display: block; font-size: 34px; font-weight: 800; margin-top: 6px; font-variant-numeric: tabular-nums; }
+  .cuenta a, .resultado a, .reservas a { color: var(--verde); font-weight: 600; font-size: 14px; }
+  .pasos { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .paso { display: flex; flex-direction: column; gap: 12px; }
+  .paso h2 { font-size: 19px; font-weight: 800; }
+  .paso .num { color: var(--verde); font-weight: 800; }
+  label { font-size: 14px; color: var(--gris); display: flex; align-items: center; gap: 8px; }
+  input { width: 100%; font: inherit; font-size: 18px; padding: 10px 12px; border: 1px solid var(--linea); border-radius: 10px; background: #fff; color: var(--tinta); }
+  button { font: inherit; font-weight: 800; font-size: 15px; padding: 12px 14px; border: 0; border-radius: 10px; background: var(--verde); color: #fff; cursor: pointer; }
+  button.secundario { background: var(--verde-claro); color: var(--verde); }
+  button:disabled { opacity: .5; cursor: wait; }
+  .qr { display: none; flex-direction: column; align-items: center; gap: 8px; padding: 12px; border: 1px dashed var(--linea); border-radius: 12px; }
+  .qr.visible { display: flex; }
+  .qr p { font-size: 13px; color: var(--gris); text-align: center; }
+  .resultado { font-size: 14px; line-height: 1.5; min-height: 21px; }
+  .resultado.error { color: #A33A2F; }
+  .ok { color: var(--verde); font-weight: 800; }
+  .reservas { display: grid; grid-template-columns: repeat(3, 1fr) auto; align-items: center; gap: 20px; background: var(--verde); border: 0; color: #fff; }
+  .reservas small { color: #CFE6DA; }
+  .reservas strong { display: block; font-size: 28px; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .reservas a { color: #fff; }
+  footer { max-width: 1120px; margin: 0 auto; padding: 0 24px 40px; font-size: 13px; color: var(--gris); }
+  @media (max-width: 900px) { .pasos { grid-template-columns: 1fr 1fr; } .reservas { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .pasos, .cuentas, .reservas { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="franja"></div>
+<header>
+  <img src="/marca/bobt-logo-compacto.svg" alt="BOBT">
+  <span class="chip">Demo en la testnet de Stellar · banco simulado</span>
+</header>
+
+<main>
+  <section class="cuentas">
+    <div class="cuenta">
+      <small>María · Cochabamba</small>
+      <strong id="maria">—</strong>
+      <a id="maria-link" target="_blank" rel="noopener">Ver cuenta en stellar.expert</a>
+    </div>
+    <div class="cuenta">
+      <small>Ana · Madrid</small>
+      <strong id="ana">—</strong>
+      <a id="ana-link" target="_blank" rel="noopener">Ver cuenta en stellar.expert</a>
+    </div>
+  </section>
+
+  <section class="pasos">
+    <div class="paso">
+      <h2><span class="num">1</span> Depositar</h2>
+      <small>María paga un QR y recibe la misma cantidad de BOBT.</small>
+      <label>Bs <input id="dep-monto" type="number" value="500" min="1"></label>
+      <button id="dep-qr">Generar QR</button>
+      <div class="qr" id="qr"><div id="qr-img"></div><p id="qr-texto"></p>
+        <button id="dep-pagar" class="secundario">El banco confirma el pago</button></div>
+      <div class="resultado" id="dep-res"></div>
+    </div>
+    <div class="paso">
+      <h2><span class="num">2</span> Remesa</h2>
+      <small>Ana manda dólares digitales; a María le llegan bolivianos.</small>
+      <label>USDC <input id="rem-monto" type="number" value="50" min="1"></label>
+      <small id="rem-cot">&nbsp;</small>
+      <button id="rem-enviar">Enviar desde Madrid</button>
+      <div class="resultado" id="rem-res"></div>
+    </div>
+    <div class="paso">
+      <h2><span class="num">3</span> Retirar</h2>
+      <small>María devuelve BOBT y recibe Bs en su banco.</small>
+      <label>BOBT <input id="ret-monto" type="number" value="300" min="1"></label>
+      <button id="ret-enviar">Retirar a mi banco</button>
+      <div class="resultado" id="ret-res"></div>
+    </div>
+    <div class="paso">
+      <h2><span class="num">4</span> Cumplimiento</h2>
+      <small>Sin KYC no se recibe BOBT. Ante un fraude, el emisor congela y recupera.</small>
+      <button id="cum-probar">Probar con una cuenta sin KYC</button>
+      <div class="resultado" id="cum-res"></div>
+    </div>
+  </section>
+
+  <section class="reservas">
+    <div><small>BOBT en circulación</small><strong id="emitido">—</strong></div>
+    <div><small>Bs en reservas</small><strong id="reservas">—</strong></div>
+    <div><small>Respaldo</small><strong id="respaldo">—</strong></div>
+    <a id="activo-link" target="_blank" rel="noopener">Verificar en la cadena</a>
+  </section>
+</main>
+<footer>Las transacciones son reales en la testnet de Stellar. El banco y las reservas están simulados: BOBT no recibe dinero real hasta operar con un emisor autorizado por la ASFI.</footer>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+  const bs = (n) => Number(n).toLocaleString('es-BO', { maximumFractionDigits: 2 });
+
+  async function api(ruta, datos) {
+    const r = await fetch(ruta, datos ? { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(datos) } : {});
+    const j = await r.json();
+    if (!r.ok) throw new Error(j.error);
+    return j;
+  }
+
+  async function refrescar() {
+    const e = await api('/api/estado');
+    $('maria').textContent = `${bs(e.maria.bobt)} BOBT`;
+    $('ana').textContent = `${bs(e.ana.usdc)} USDC`;
+    $('maria-link').href = e.maria.enlace;
+    $('ana-link').href = e.ana.enlace;
+    $('emitido').textContent = bs(e.transparencia.emitido);
+    $('reservas').textContent = `Bs ${bs(e.transparencia.reservas)}`;
+    $('respaldo').textContent = `${bs(e.transparencia.respaldo * 100)} %`;
+    $('activo-link').href = e.transparencia.enlace;
+  }
+
+  // Corre una acción: deshabilita el botón, mide el tiempo y muestra el resultado.
+  async function accion(boton, salida, fn) {
+    boton.disabled = true;
+    salida.className = 'resultado';
+    salida.textContent = 'Enviando a Stellar…';
+    const inicio = performance.now();
+    try {
+      const html = await fn();
+      const s = ((performance.now() - inicio) / 1000).toLocaleString('es-BO', { maximumFractionDigits: 1 });
+      salida.innerHTML = `${html} <span class="ok">· ${s} s</span>`;
+      await refrescar();
+    } catch (e) {
+      salida.className = 'resultado error';
+      salida.textContent = e.message;
+    } finally {
+      boton.disabled = false;
+    }
+  }
+  const tx = (r) => `<a href="${r.enlace}" target="_blank" rel="noopener">ver transacción</a>`;
+
+  let referencia = null;
+  $('dep-qr').onclick = () => {
+    referencia = 'QR-' + Date.now().toString(36).toUpperCase();
+    const monto = $('dep-monto').value;
+    $('qr-img').innerHTML = '';
+    new QRCode($('qr-img'), { text: `BOBT|${referencia}|BOB|${monto}`, width: 148, height: 148, colorDark: '#14211C', colorLight: '#FFFFFF' });
+    $('qr-texto').textContent = `Bs ${bs(monto)} · ${referencia} (QR simulado)`;
+    $('qr').classList.add('visible');
+    $('dep-res').textContent = '';
+  };
+  $('dep-pagar').onclick = (ev) => accion(ev.target, $('dep-res'), async () => {
+    const r = await api('/api/deposito', { monto: $('dep-monto').value, referencia });
+    $('qr').classList.remove('visible');
+    return `${bs(r.monto)} BOBT acuñados a María · ${tx(r)}`;
+  });
+
+  let espera;
+  const cotizar = () => {
+    clearTimeout(espera);
+    espera = setTimeout(async () => {
+      try { $('rem-cot').textContent = `María recibe ≈ ${bs((await api('/api/cotizar?usdc=' + $('rem-monto').value)).bobt)} BOBT`; }
+      catch { $('rem-cot').innerHTML = '&nbsp;'; }
+    }, 250);
+  };
+  $('rem-monto').oninput = cotizar;
+  $('rem-enviar').onclick = (ev) => accion(ev.target, $('rem-res'), async () => {
+    const r = await api('/api/remesa', { usdc: $('rem-monto').value });
+    return `${r.usdc} USDC → ${bs(r.recibido)} BOBT en una sola operación · ${tx(r)}`;
+  });
+  $('ret-enviar').onclick = (ev) => accion(ev.target, $('ret-res'), async () => {
+    const r = await api('/api/retiro', { monto: $('ret-monto').value });
+    return `${bs(r.monto)} BOBT destruidos; el banco paga Bs ${bs(r.monto)} · ${tx(r)}`;
+  });
+  $('cum-probar').onclick = (ev) => accion(ev.target, $('cum-res'), async () => {
+    const r = await api('/api/cumplimiento', {});
+    return `Pago sin KYC: <b>rechazado por la red</b>. Fraude: cuenta congelada y 10 BOBT recuperados · ${tx(r)}`;
+  });
+
+  refrescar().then(cotizar).catch((e) => { $('dep-res').className = 'resultado error'; $('dep-res').textContent = e.message; });
+</script>
+</body>
+</html>
