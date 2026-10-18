@@ -1,0 +1,12 @@
+node_modules/
+.estado.json
+.DS_Store
+
+# Documentos internos y datos de personas: no se publican.
+/CLAUDE.md
+/README.md
+/IDEATON.md
+/INVESTIGACION.md
+/DEMO.md
+/entrevistas/
+/entrega/
