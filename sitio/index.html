@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BOBT · El boliviano digital en Stellar</title>
+<meta name="description" content="1 BOBT = 1 Bs. El boliviano en la red de Stellar: se compra con QR, se cambia por USDC en segundos y se canjea en tu banco.">
+<link rel="icon" href="bobt-moneda-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --papel: #F3F1EC; --tinta: #10201A; --verde: #00573F; --gris: #5E6B64; --linea: #D8D4CA;
+    --rojo: #D9645A; --amarillo: #F2C94C; --verde-suave: #4FA36B;
+    --display: 'IBM Plex Sans Condensed', 'Arial Narrow', sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'IBM Plex Sans', system-ui, sans-serif; background: var(--papel); color: var(--tinta); font-size: 18px; line-height: 1.55; }
+  a { color: var(--verde); text-underline-offset: 3px; }
+  .franja { height: 3px; background: linear-gradient(90deg, var(--rojo) 0 33.3%, var(--amarillo) 33.3% 66.6%, var(--verde-suave) 66.6%); }
+  .c { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+
+  .barra { display: flex; justify-content: space-between; align-items: center; padding: 22px 0; font-family: var(--mono); font-size: 13px; color: var(--gris); }
+  .barra img { height: 30px; display: block; }
+  .vivo::before { content: ''; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--verde-suave); margin-right: 8px; vertical-align: 1px; }
+
+  .hero { padding: 96px 0 88px; border-bottom: 1px solid var(--linea); }
+  .hero h1 { font-family: var(--display); font-weight: 700; font-size: clamp(64px, 13vw, 168px); line-height: .9; letter-spacing: -0.02em; color: var(--verde); }
+  .hero p { font-size: clamp(20px, 2.4vw, 26px); line-height: 1.4; max-width: 30em; margin-top: 36px; }
+  .hero .ver { display: inline-block; margin-top: 28px; font-weight: 600; }
+
+  section { padding: 80px 0; border-bottom: 1px solid var(--linea); }
+  h2 { font-family: var(--display); font-weight: 700; font-size: clamp(36px, 5vw, 56px); line-height: 1; letter-spacing: -0.01em; }
+  .lead { color: var(--gris); max-width: 34em; margin-top: 16px; }
+
+  .recibo { margin-top: 40px; background: #FBFAF7; border: 1px solid var(--linea); border-radius: 4px; padding: 32px; font-family: var(--mono); font-size: 15px; display: grid; grid-template-columns: 1fr auto 1fr; gap: 24px; align-items: center; }
+  .recibo .monto { font-family: var(--display); font-size: clamp(36px, 6vw, 64px); font-weight: 700; line-height: 1; color: var(--tinta); }
+  .recibo .quien { color: var(--gris); margin-top: 8px; }
+  .recibo .flecha { font-size: 28px; color: var(--verde); }
+  .recibo .pie { grid-column: 1 / -1; border-top: 1px dashed var(--linea); padding-top: 16px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; color: var(--gris); }
+
+  table { width: 100%; border-collapse: collapse; margin-top: 40px; font-size: 20px; }
+  td { padding: 18px 0; border-top: 1px solid var(--linea); }
+  td:last-child { text-align: right; font-family: var(--mono); font-size: 16px; }
+  tr.falta td { color: var(--verde); font-weight: 600; }
+
+  .lineas { margin-top: 32px; }
+  .lineas div { display: grid; grid-template-columns: 220px 1fr; gap: 24px; padding: 20px 0; border-top: 1px solid var(--linea); }
+  .lineas b { font-weight: 600; }
+  .lineas span { color: var(--gris); }
+
+  .codigo { margin-top: 32px; background: var(--tinta); color: var(--papel); border-radius: 4px; padding: 28px 32px; font-family: var(--mono); font-size: 15px; line-height: 1.7; overflow-x: auto; }
+  .codigo span { color: #8FA39A; }
+  .numeros { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 40px; }
+  .numeros small { display: block; font-family: var(--mono); font-size: 13px; color: var(--gris); text-transform: uppercase; letter-spacing: .06em; }
+  .numeros strong { display: block; font-family: var(--display); font-size: clamp(44px, 7vw, 80px); font-weight: 700; line-height: 1.05; font-variant-numeric: tabular-nums; }
+
+  .movs { margin-top: 32px; font-family: var(--mono); font-size: 14px; }
+  .movs div { display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; gap: 16px; padding: 12px 0; border-top: 1px solid var(--linea); color: var(--gris); }
+  .movs div b { color: var(--tinta); font-weight: 500; }
+
+  footer { padding: 40px 0 56px; font-size: 14px; color: var(--gris); display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+
+  @media (max-width: 720px) {
+    .recibo { grid-template-columns: 1fr; } .recibo .flecha { transform: rotate(90deg); justify-self: start; }
+    .lineas div { grid-template-columns: 1fr; gap: 4px; }
+    .numeros { grid-template-columns: 1fr; }
+    .movs div { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="franja"></div>
+<div class="c">
+  <div class="barra">
+    <img src="bobt-logo-compacto.svg" alt="BOBT">
+    <span class="vivo" id="ledger">Testnet de Stellar</span>
+  </div>
+
+  <header class="hero">
+    <h1>1 BOBT<br>= 1 Bs</h1>
+    <p>El boliviano, en la red de Stellar. Se compra con un QR, se cambia por dólares digitales en segundos y se canjea en tu banco cuando quieras.</p>
+    <a class="ver" id="ver-activo" target="_blank" rel="noopener">Ver el activo en la red →</a>
+  </header>
+
+  <section>
+    <h2>Una remesa, de verdad.</h2>
+    <p class="lead">Enviada en la testnet de Stellar. Sale en dólares digitales, llega en bolivianos, en una sola operación.</p>
+    <div class="recibo">
+      <div><div class="monto">50 USDC</div><div class="quien">Madrid</div></div>
+      <div class="flecha">→</div>
+      <div><div class="monto">581 BOBT</div><div class="quien">Cochabamba</div></div>
+      <div class="pie">
+        <span>3,4 segundos · sin P2P · sin intermediarios</span>
+        <a href="https://stellar.expert/explorer/testnet/tx/f5611b1131c34edfb83bd4122a903003c5fb761026fe3ddcc34271638a15b912" target="_blank" rel="noopener">tx f5611b…b912</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lo que le falta a Bolivia.</h2>
+    <table>
+      <tr><td>Argentina</td><td>ARST en Stellar</td></tr>
+      <tr><td>Brasil</td><td>BRLT en Stellar</td></tr>
+      <tr class="falta"><td>Bolivia</td><td>BOBT</td></tr>
+    </table>
+    <p class="lead">Sin un boliviano en la red, ninguna wallet, remesadora o empresa de afuera puede pagar en bolivianos con estándares abiertos.</p>
+  </section>
+
+  <section>
+    <h2>El anchor boliviano.</h2>
+    <p class="lead">Stellar conecta las monedas locales con el mundo a través de anchors. Bolivia no tenía ninguno. BOBT es esa conexión.</p>
+    <div class="lineas">
+      <div><b>Moneda nativa</b><span>Una cuenta emisora y un código. Sin contratos que escribir ni auditar.</span></div>
+      <div><b>Cumplimiento en la red</b><span>Solo cuentas verificadas reciben BOBT. Ante un fraude, el emisor congela y recupera.</span></div>
+      <div><b>Estándares abiertos</b><span>SEP-24 para depositar y retirar, SEP-31 para pagos entre empresas, SEP-38 para cotizar.</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Para desarrolladores.</h2>
+    <p class="lead">Una integración, y tu app paga y cobra en bolivianos. Sin acuerdos con cada banco, sin P2P.</p>
+<pre class="codigo"><span>// 50 USDC que llegan como bolivianos, en una operación</span>
+Operation.pathPaymentStrictSend({
+  sendAsset: USDC, sendAmount: '50',
+  destination: cliente,
+  destAsset: BOBT, destMin: '578',
+})</pre>
+  </section>
+
+  <section>
+    <h2>Cada BOBT, respaldado.</h2>
+    <p class="lead">El plan: reservas 1:1 en una cuenta separada y un emisor autorizado por la ASFI. Lo emitido no se declara: se lee de la red.</p>
+    <div class="numeros">
+      <div><small>BOBT en circulación · ahora</small><strong id="emitido">—</strong></div>
+      <div><small>Respaldo</small><strong>1:1</strong></div>
+    </div>
+    <div class="movs" id="movs"></div>
+  </section>
+
+  <footer>
+    <span>BOBT · prototipo en la testnet de Stellar · Ideatón Stellar Bolivia 2026</span>
+    <span>No recibe dinero real hasta operar con un emisor autorizado.</span>
+  </footer>
+</div>
+
+<script>
+  const H = 'https://horizon-testnet.stellar.org';
+  const EMISOR = 'GATKWGAZCW4O63DJ6UB7YI3K3LOW4FFJ2LMMDIOIKZQV5JOC4NMFRIKH';
+  const MARIA = 'GDUCLYYQTPTQZWFHLF7ILQRQYIV7TO537QK2XX6IC5Y6RKSNMJUT5HHW';
+  const X = 'https://stellar.expert/explorer/testnet';
+  const num = (n) => Number(n).toLocaleString('es-BO', { maximumFractionDigits: 2 });
+  const $ = (id) => document.getElementById(id);
+  $('ver-activo').href = `${X}/asset/BOBT-${EMISOR}`;
+
+  fetch(`${H}/ledgers?order=desc&limit=1`).then((r) => r.json())
+    .then((j) => { $('ledger').textContent = `Testnet · ledger ${num(j._embedded.records[0].sequence)}`; }).catch(() => {});
+
+  fetch(`${H}/assets?asset_code=BOBT&asset_issuer=${EMISOR}`).then((r) => r.json()).then((j) => {
+    const a = j._embedded.records[0], b = a.balances;
+    $('emitido').textContent = num([b.authorized, b.authorized_to_maintain_liabilities, b.unauthorized,
+      a.claimable_balances_amount, a.liquidity_pools_amount, a.contracts_amount].reduce((s, x) => s + Number(x ?? 0), 0));
+  }).catch(() => { $('emitido').textContent = 'sin conexión'; });
+
+  // Últimos movimientos de BOBT de una cuenta de la demo, leídos de la red.
+  const tipo = { payment: 'Pago', path_payment_strict_send: 'Remesa USDC → BOBT', path_payment_strict_receive: 'Remesa' };
+  fetch(`${H}/accounts/${MARIA}/payments?order=desc&limit=6`).then((r) => r.json()).then((j) => {
+    $('movs').innerHTML = j._embedded.records
+      .filter((p) => p.asset_code === 'BOBT')
+      .map((p) => {
+        const entra = p.to === MARIA;
+        const hace = Math.max(1, Math.round((Date.now() - new Date(p.created_at)) / 60000));
+        return `<div><b>${p.type === 'payment' && p.from === EMISOR ? 'Depósito por QR' : p.type === 'payment' && p.to === EMISOR ? 'Retiro a banco' : p.type === 'payment' ? 'Envío a otra cuenta' : tipo[p.type] ?? p.type}</b>`
+          + `<span>${entra ? '+' : '−'}${num(p.amount)} BOBT</span><span>hace ${hace < 60 ? hace + ' min' : Math.round(hace / 60) + ' h'}</span>`
+          + `<a href="${X}/tx/${p.transaction_hash}" target="_blank" rel="noopener">${p.transaction_hash.slice(0, 6)}…</a></div>`;
+      }).join('');
+  }).catch(() => {});
+</script>
+</body>
+</html>
