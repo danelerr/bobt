@@ -1,0 +1,23 @@
+{
+  "name": "bobt-demo",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "preparar": "node 01-preparar.mjs",
+    "deposito": "node 02-deposito.mjs",
+    "remesa": "node 03-remesa.mjs",
+    "retiro": "node 04-retiro.mjs",
+    "cumplimiento": "node 05-cumplimiento.mjs",
+    "transparencia": "node 06-transparencia.mjs",
+    "demo": "node 01-preparar.mjs && node 02-deposito.mjs && node 03-remesa.mjs && node 04-retiro.mjs && node 05-cumplimiento.mjs && node 06-transparencia.mjs",
+    "start": "node server.mjs"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "private": "true",
+  "dependencies": {
+    "@stellar/stellar-sdk": "^17.2.1"
+  }
+}
